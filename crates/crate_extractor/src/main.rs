@@ -57,6 +57,8 @@ fn main() {
             let res = load_workspace_at(path, &cargo_config, &load_cargo_config, &|_| {});
             if let Ok((change, _, _)) = res {
                 let json = ChangeJson::from(&change);
+                let size = json.size().unwrap();
+                println!("{}", size);
                 let text = serde_json::to_string(&json).expect("serialization of change must work");
                 fs::write(output_path, text).expect("Unable to write file");
             }

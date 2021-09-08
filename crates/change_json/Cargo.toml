@@ -10,6 +10,7 @@ test = true
 [dependencies]
 
 serde = { version = "1.0.130", features = ["derive"] }
+serde_json = { version = "1.0.48", features = ["preserve_order"] }
 
 base_db = {package = "ra_ap_base_db", version = "0.0.71"}
 cfg = {package = "ra_ap_cfg", version = "0.0.71"}

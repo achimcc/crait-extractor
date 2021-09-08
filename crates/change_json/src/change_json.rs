@@ -52,6 +52,22 @@ impl ChangeJson {
         });
         change
     }
+
+    pub fn size(&self) -> Result<usize, serde_json::Error> {
+        let text = serde_json::to_string(self);
+        text.map(|res| String::len(&res))
+    }
+
+    pub fn split(&self, chunk_size: usize) -> Result<Vec<ChangeJson>, serde_json::Error> {
+        let mut result = Vec::new();
+        let mut change = ChangeJson::default();
+        change.crate_graph = self.crate_graph.clone();
+        change.local_roots = self.local_roots.clone();
+        change.library_roots = self.library_roots.clone();
+        result.push(change);
+        let test = self.files_changed.files.chunks(chunk_size);
+        Ok(result)
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]

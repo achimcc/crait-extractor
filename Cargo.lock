@@ -157,6 +157,7 @@ dependencies = [
  "ra_ap_cfg",
  "ra_ap_tt",
  "serde",
+ "serde_json",
 ]
 
 [[package]]
