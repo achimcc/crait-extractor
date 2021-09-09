@@ -55,11 +55,10 @@ fn main() {
             let output_path = matches.value_of("output").unwrap_or("./change.json");
             let output_path = Path::new(output_path);
             let res = load_workspace_at(path, &cargo_config, &load_cargo_config, &|_| {});
-            if let Ok((change, _, _)) = res {
-                let json = ChangeJson::from(&change);
-                let text = serde_json::to_string(&json).expect("serialization of change must work");
-                fs::write(output_path, text).expect("Unable to write file");
-            }
+            let (change, _, _) = res.unwrap_or_else(|err| panic!("Error loading workspace: {}", err));
+            let json = ChangeJson::from(&change);
+            let text = serde_json::to_string(&json).expect("serialization of change must work");
+            fs::write(output_path, text).expect("Unable to write file");
         }
         None => println!("Please enter a  subcommand!"),
         _ => println!("Your entered subcommand is invalid!"),
