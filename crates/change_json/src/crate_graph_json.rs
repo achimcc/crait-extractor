@@ -1,4 +1,4 @@
-use base_db::{CrateData, CrateDisplayName, CrateGraph, CrateId, CrateName, Edition, Env, FileId};
+use base_db::{CrateData, CrateDisplayName, CrateGraph, CrateId, CrateName, Dependency, Edition, Env, FileId};
 use cfg::CfgOptions;
 use serde::{Deserialize, Serialize};
 use std::ops::Index;
@@ -88,9 +88,10 @@ impl CrateGraphJson {
         });
         self.deps.iter().for_each(|dep| {
             let from = CrateId(dep.from);
-            let to = CrateId(dep.to);
+            
             if let Ok(name) = CrateName::new(&dep.name) {
-                let _ = crate_graph.add_dep(from, name, to);
+                let dep = Dependency::new(name,CrateId(dep.to));
+                let _ = crate_graph.add_dep(from, dep);
             };
         });
         crate_graph
@@ -206,10 +207,10 @@ mod tests {
             Default::default(),
         );
         assert!(graph
-            .add_dep(crate1, CrateName::new("crate2").unwrap(), crate2)
+            .add_dep(crate1, Dependency::new(CrateName::new("crate2").unwrap(), crate2))
             .is_ok());
         assert!(graph
-            .add_dep(crate2, CrateName::new("crate3").unwrap(), crate3)
+            .add_dep(crate2, Dependency::new(CrateName::new("crate3").unwrap(), crate3))
             .is_ok());
         let serialized_graph = CrateGraphJson::from(&graph);
         let expected_deps = vec![
